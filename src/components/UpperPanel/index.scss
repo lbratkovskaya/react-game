@@ -1,0 +1,17 @@
+.upperPanel {
+  display: flex;
+  justify-content: space-around;
+}
+
+.nextColors {
+  .tableCell {
+    width: 30px;
+    height: 30px;
+
+    .ball-image {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+    }
+  }
+}
