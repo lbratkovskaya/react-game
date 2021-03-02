@@ -1,6 +1,6 @@
 .game-table {
   position: relative;
-  margin: auto;
+  // margin: auto;
   background: #777;
 
   &.game-table-9 {
@@ -74,7 +74,7 @@
   }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 740px) {
   .game-table-9 {
     .tableCell {
       width: 48px;

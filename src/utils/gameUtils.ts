@@ -3,7 +3,7 @@ import {
   STORAGE_GAME_STATE_KEY,
   DEFAULT_FIELD_SIZE,
   DEFAULT_BALLS_COUNT,
- } from '.';
+} from '.';
 import { Ball } from '../types';
 
 export const generateColorIndex = (): number => {
@@ -57,6 +57,30 @@ export const getStoredScore = (): number => {
   return 0;
 }
 
+export const getStoredTopScore = (): number => {
+  const stateFromStorage = readFromLocalStorage();
+  if (stateFromStorage && stateFromStorage.topScore) {
+    return stateFromStorage.topScore;
+  }
+  return 500;
+}
+
+export const getStoredSoundSettings = (): boolean => {
+  const stateFromStorage = readFromLocalStorage();
+  if (stateFromStorage && stateFromStorage.playSound !== undefined) {
+    return stateFromStorage.playSound;
+  }
+  return true;
+} 
+
+export const getStoredAnimateSettings = (): boolean => {
+  const stateFromStorage = readFromLocalStorage();
+  if (stateFromStorage && stateFromStorage.animateMove !== undefined) {
+    return stateFromStorage.animateMove;
+  }
+  return true;
+} 
+
 export const generateGameFieldState = (
   fieldSize: number,
   count: number,
@@ -82,7 +106,7 @@ const processPath = (
   currentX: number,
   currentY: number,
   matrix: number[][],
-  path: [number,number][]
+  path: [number, number][]
 ): [number, number][] => {
   path.unshift([currentX, currentY]);
 
@@ -126,7 +150,7 @@ const processNodes = (
 
     const currentX = currentNode.x;
     const currentY = currentNode.y;
-    currentMark = currentNode.mark; 
+    currentMark = currentNode.mark;
     matrix[currentX][currentY] = currentMark;
 
     if (currentX === targetPosition[0] && currentY === targetPosition[1]) {
@@ -285,7 +309,10 @@ const uniqueArray = (arr: [number, number][]): [number, number][] => {
 export const readFromLocalStorage = (): {
   matrix: number[][],
   score: number,
+  topScore: number,
   next: number[],
+  playSound: boolean,
+  animateMove: boolean,
 } => {
   const gameStateJSON = localStorage.getItem(STORAGE_GAME_STATE_KEY);
   if (gameStateJSON != null) {
@@ -294,8 +321,29 @@ export const readFromLocalStorage = (): {
   return null;
 }
 
-export const saveToLocalStorage = (matrix: number[][], score: number, next: number[]): void => {
-  const gameStateObj = { matrix, score, next };
+export const saveToLocalStorage = (
+  matrix: number[][],
+  score: number,
+  topScore: number,
+  next: number[],
+  playSound: boolean,
+  animateMove: boolean,
+): void => {
+  const gameStateObj = { matrix, score, next, topScore, playSound, animateMove };
   localStorage.setItem(STORAGE_GAME_STATE_KEY, JSON.stringify(gameStateObj));
+}
+
+export const gameIsDone = (matrix: number[][], nextBallsSize: number): boolean => {
+  const freeCellCount = matrix.reduce((accum, row) => {
+    accum += row.reduce((acc, elem) => {
+      if (elem === 0) {
+        acc += 1
+      }
+      return acc;
+    }, 0);
+    return accum;
+  }, 0);
+
+  return freeCellCount < nextBallsSize;
 }
 

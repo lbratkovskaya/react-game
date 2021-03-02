@@ -24,10 +24,6 @@ module.exports = (env, options) => {
       },
     },
     devServer: {
-      // proxy: [{
-      //   context: ['/auth', '/api'],
-      //   target: 'http://localhost:3000',
-      // }],
       port: 9000,
     },
     module: {
@@ -71,7 +67,6 @@ module.exports = (env, options) => {
               options: {
                 name: "[name].[ext]",
                 outputPath: "img/",
-                publicPath: 'rsclone/clone',
               },
             },
           ],
@@ -84,7 +79,6 @@ module.exports = (env, options) => {
               options: {
                 name: "[name].[ext]",
                 outputPath: "sound/",
-                publicPath: 'rsclone/clone',
               },
             },
           ],

@@ -6,9 +6,13 @@ import {
   transformStateToMatrix,
   checkForScore,
   getStartGameFieldState,
+  getStoredTopScore,
   getStoredScore,
+  getStoredSoundSettings,
+  getStoredAnimateSettings,
   saveToLocalStorage,
   getStartNextColorsSet,
+  gameIsDone,
 } from './gameUtils';
 import {
   COLORS,
@@ -16,6 +20,7 @@ import {
   DEFAULT_FIELD_SIZE,
   SCORE_BY_LINE_LENGTH,
   STORAGE_GAME_STATE_KEY,
+  MAX_SCORE_HEIGHT,
 } from './constants';
 
 export { 
@@ -27,11 +32,16 @@ export {
   checkForScore,
   getStartGameFieldState,
   getStoredScore,
+  getStoredTopScore,
+  getStoredSoundSettings,
+  getStoredAnimateSettings,
   saveToLocalStorage,
   getStartNextColorsSet,
+  gameIsDone,
   COLORS,
   DEFAULT_BALLS_COUNT,
   DEFAULT_FIELD_SIZE,
   SCORE_BY_LINE_LENGTH,
   STORAGE_GAME_STATE_KEY,
+  MAX_SCORE_HEIGHT,
 };

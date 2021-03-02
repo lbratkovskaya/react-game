@@ -26,3 +26,5 @@ export const SCORE_BY_LINE_LENGTH: {
 };
 
 export const STORAGE_GAME_STATE_KEY = 'gameState';
+
+export const MAX_SCORE_HEIGHT = 250;

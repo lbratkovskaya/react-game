@@ -1,21 +1,28 @@
-import React, { Component, ComponentProps } from 'react';
+import React, { Component, ComponentProps, RefObject } from 'react';
 import { Button, Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
+import { VolumeOffOutlined, VolumeUpOutlined } from '@material-ui/icons';
 import GameField from '../GameField';
 import UpperPanel from '../UpperPanel';
 import OptionsSelect from './OptionsSelect';
+import FinishGameForm from '../FinishGameForm';
 import { Ball } from '../../types';
 import {
   generateGameFieldState,
   generateNextColors,
   SCORE_BY_LINE_LENGTH,
+  MAX_SCORE_HEIGHT,
   checkForScore,
   getStartGameFieldState,
   getStartNextColorsSet,
   getStoredScore,
+  getStoredTopScore,
   saveToLocalStorage,
+  gameIsDone,
+  getStoredSoundSettings,
+  getStoredAnimateSettings,
 } from '../../utils';
 import './index.scss';
-import { VolumeOffOutlined, VolumeUpOutlined } from '@material-ui/icons';
+
 
 interface AppState {
   nextBalls: number[],
@@ -23,8 +30,11 @@ interface AppState {
   fieldSize: number,
   ballsCount: number,
   currentScore: number,
+  topScore: number,
   playSound: boolean,
   animateMove: boolean,
+  gameIsDone: boolean,
+  openForm: boolean,
 }
 
 class App extends Component<ComponentProps<'object'>, AppState> {
@@ -33,14 +43,20 @@ class App extends Component<ComponentProps<'object'>, AppState> {
     const startState = getStartGameFieldState();
     const nextBalls = getStartNextColorsSet();
     const storedScore = getStoredScore();
+    const topScore = getStoredTopScore();
+    const playSound = getStoredSoundSettings();
+    const animateMove = getStoredAnimateSettings();
     this.state = {
       nextBalls,
       gameArea: startState,
       fieldSize: startState.length,
       ballsCount: nextBalls.length,
+      topScore,
       currentScore: storedScore,
-      playSound: true,
-      animateMove: true,
+      playSound,
+      animateMove,
+      gameIsDone: false,
+      openForm: false,
     };
   }
 
@@ -49,8 +65,8 @@ class App extends Component<ComponentProps<'object'>, AppState> {
   }
 
   componentGracefulUnmount = (): void => {
-    const { gameArea, currentScore, nextBalls } = this.state;
-    saveToLocalStorage(gameArea, currentScore, nextBalls);
+    const { gameArea, currentScore, topScore, nextBalls, playSound, animateMove } = this.state;
+    saveToLocalStorage(gameArea, currentScore, topScore, nextBalls, playSound, animateMove);
   };
 
   componentWillUnmount() {
@@ -59,10 +75,19 @@ class App extends Component<ComponentProps<'object'>, AppState> {
 
   updateCurrentBalls = (currGameArea: number[][]): void => {
     const { fieldSize, ballsCount, nextBalls } = this.state;
+    if (gameIsDone(currGameArea, ballsCount)) {
+      this.showFinishGameForm();
+      return;
+    }
     const gameAreaWithAdditionalBalls = generateGameFieldState(fieldSize, ballsCount, currGameArea, nextBalls);
+    if (gameIsDone(gameAreaWithAdditionalBalls, ballsCount)) {
+      this.showFinishGameForm();
+      return;
+    }
     const newNextBalls = generateNextColors(ballsCount);
     const resultPath: [number, number][] = checkForScore(fieldSize, gameAreaWithAdditionalBalls);
     if (resultPath.length === 0) {
+
       this.setState(() => ({ gameArea: gameAreaWithAdditionalBalls, nextBalls: newNextBalls }));
     }
     else {
@@ -72,6 +97,7 @@ class App extends Component<ComponentProps<'object'>, AppState> {
   }
 
   updateCurrentScore = (currentGameArea: number[][], resultPath: [number, number][]): void => {
+    const { topScore } = this.state;
     const newGameArea = this.removeBalls(currentGameArea, resultPath);
     const newScore = SCORE_BY_LINE_LENGTH[resultPath.length.toString()];
     this.setState((state) => ({ gameArea: newGameArea, currentScore: state.currentScore + newScore }));
@@ -140,6 +166,7 @@ class App extends Component<ComponentProps<'object'>, AppState> {
       nextBalls: nextBallsColors,
       gameArea: startState,
       currentScore,
+      gameIsDone: false,
     });
   }
 
@@ -159,6 +186,10 @@ class App extends Component<ComponentProps<'object'>, AppState> {
     this.setState({ ballsCount: event.target.value }, () => this.startNewGame());
   }
 
+  showFinishGameForm = (): void => {
+    this.setState(() => ({ gameIsDone: true, openForm: true }));
+  }
+
   togglePlaySound = (): void => {
     this.setState((state) => ({ playSound: !state.playSound }));
   }
@@ -167,15 +198,22 @@ class App extends Component<ComponentProps<'object'>, AppState> {
     this.setState((state) => ({ animateMove: !state.animateMove }));
   }
 
+  closeForm = (): void => {
+    this.setState(() => ({ openForm: false }));
+  }
+
   render() {
     const {
       nextBalls,
       gameArea,
       currentScore,
+      topScore,
       fieldSize,
       ballsCount,
       playSound,
       animateMove,
+      gameIsDone,
+      openForm,
     } = this.state;
     return (
       <>
@@ -220,20 +258,39 @@ class App extends Component<ComponentProps<'object'>, AppState> {
               }
             ]} />
           <FormControlLabel
-            control={<Checkbox checked={animateMove} onChange={this.toggleAnimateMove} color="default"/>}
+            control={<Checkbox checked={animateMove} onChange={this.toggleAnimateMove} color="default" />}
             label="Animate Move"
           />
           <IconButton title="New Game" onClick={this.togglePlaySound}>
             {playSound ? <VolumeOffOutlined /> : <VolumeUpOutlined />}
           </IconButton>
         </div>
-        <UpperPanel nextColors={nextBalls} topScore={32767} currentScore={currentScore} />
-        <GameField
-          playSound={playSound}
-          fieldSize={fieldSize}
-          gameFieldState={gameArea}
-          moveBallToNewCell={this.moveBallToNewCell}
-        />
+        <UpperPanel nextColors={nextBalls} topScore={topScore} currentScore={currentScore} />
+        <div className={`main-panel main-panel-${fieldSize}`}>
+          <div className="left">
+            <div id="lname" className="name-left">Король</div>
+            <div className="cbottom"></div>
+            <div id="b-king" className="bgg1"></div>
+            <div id="king" className="king"></div>
+          </div>
+          <GameField
+            playSound={playSound}
+            fieldSize={fieldSize}
+            gameFieldState={gameArea}
+            moveBallToNewCell={this.moveBallToNewCell}
+          />
+          <div className="right">
+            <div id="rname" className="name-right">Претендент</div>
+            <div className="cbottom"></div>
+            <div
+              id="bknight"
+              className="bgg2"
+              style={{height: `${currentScore / topScore * MAX_SCORE_HEIGHT}px`}}></div>
+            <div id="knight" className="knight"></div>
+          </div>
+        </div>
+
+        {gameIsDone && openForm && <FinishGameForm score={currentScore} closeForm={this.closeForm} />}
       </>
     );
   }

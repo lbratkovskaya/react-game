@@ -18,7 +18,7 @@ interface OptionsSelectProps {
   }[]
 }
 
-export default function OptionsSelect(props: OptionsSelectProps) {
+export default function OptionsSelect(props: OptionsSelectProps): JSX.Element {
 
   const { fieldName, fieldTitle, options, currentValue, onSelectValueChange } = props;
 

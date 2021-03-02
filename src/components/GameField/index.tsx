@@ -71,7 +71,6 @@ export default class GameField extends Component<GameFieldProps, GameFieldState>
   }
 
   onCellClickHandler = (rowIndex: number, cellIndex: number): void => {
-
     const { moveBallToNewCell } = this.props;
     const { currentActive } = this.state;
     if (!currentActive) {
@@ -126,7 +125,7 @@ export default class GameField extends Component<GameFieldProps, GameFieldState>
             {this.getTableRows()}
           </tbody>
         </table>
-        <audio ref={this.audioRef} id="music2" src="./../../sound/soccer-ball-bounce-grass_fyhd2tnu.mp3"></audio>
+        <audio ref={this.audioRef} id="music2" src="./sound/soccer-ball-bounce-grass_fyhd2tnu.mp3"></audio>
       </>
     );
   }
