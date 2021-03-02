@@ -21,11 +21,11 @@ export default function UpperPanel(props: UpperPanelProps): JSX.Element {
 
   return (
     <div className="upperPanel">
-      <span className="topScore">
+      <div className="top-score">
         <span className="score">
           {topScore}
         </span>
-      </span>
+        </div>
       <table className="nextColors">
         <tbody>
           <tr>
@@ -33,11 +33,11 @@ export default function UpperPanel(props: UpperPanelProps): JSX.Element {
           </tr>
         </tbody>
       </table>
-      <span className="currentScore">
+      <div className="current-score">
         <span className="score">
           {currentScore}
         </span>
-      </span>
+      </div>
     </div>
   );
 }

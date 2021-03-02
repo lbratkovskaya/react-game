@@ -10,8 +10,10 @@ export const generateColorIndex = (): number => {
   return Math.floor(Math.random() * COLORS.length) % COLORS.length + 1;
 };
 
-export const generateNextColors = (): number[] => {
-  return [0, 1, 2].map(() => generateColorIndex());
+export const generateNextColors = (size: number): number[] => {
+  const arr = new Array(size);
+  arr.fill(0);
+  return arr.map(() => generateColorIndex());
 };
 
 const generateCoordinates = (fieldSize: number): { row: number, column: number } => {
@@ -44,7 +46,7 @@ export const getStartNextColorsSet = (): number[] => {
   if (stateFromStorage) {
     return stateFromStorage.next;
   }
-  return generateNextColors();
+  return generateNextColors(DEFAULT_BALLS_COUNT);
 }
 
 export const getStoredScore = (): number => {
@@ -80,9 +82,29 @@ const processPath = (
   currentX: number,
   currentY: number,
   matrix: number[][],
+  path: [number,number][]
 ): [number, number][] => {
-  // TODO
-  return [];
+  path.unshift([currentX, currentY]);
+
+  const currentMark = matrix[currentX][currentY];
+
+  if (currentMark === 0) {
+    return path;
+  }
+
+  const tupleToNext = [[0, -1], [-1, 0], [0, 1], [1, 0]].find((tuple) => {
+    const nextX = currentX + tuple[0];
+    const nextY = currentY + tuple[1];
+
+    return isInMatrixBounds(nextX, nextY, matrix.length) && matrix[nextX][nextY] === currentMark - 1;
+  });
+
+  const nextX = currentX + tupleToNext[0];
+  const nextY = currentY + tupleToNext[1];
+
+
+
+  return processPath(nextX, nextY, matrix, path);
 }
 
 const isInMatrixBounds = (x: number, y: number, matrixLength: number): boolean => {
@@ -95,32 +117,32 @@ const processNodes = (
   matrix: number[][],
   targetPosition: [number, number],
 ): [number, number][] => {
-  const queue: { x: number, y: number }[] = [];
-  queue.push({ x: startX, y: startY });
-
+  const queue: { x: number, y: number, mark: number }[] = [];
   let currentMark = 0;
+  queue.push({ x: startX, y: startY, mark: currentMark });
+
   while (queue.length > 0) {
-    const currentNode: { x: number, y: number } = queue.shift();
+    const currentNode: { x: number, y: number, mark: number } = queue.shift();
 
     const currentX = currentNode.x;
     const currentY = currentNode.y;
+    currentMark = currentNode.mark; 
+    matrix[currentX][currentY] = currentMark;
 
     if (currentX === targetPosition[0] && currentY === targetPosition[1]) {
-      return processPath(currentX, currentY, matrix);
+      return processPath(currentX, currentY, matrix, []);
     }
-
-    matrix[currentX][currentY] = currentMark;
 
     [[0, -1], [-1, 0], [0, 1], [1, 0]].forEach((tuple) => {
       const nextX = currentX + tuple[0];
       const nextY = currentY + tuple[1];
 
       if (isInMatrixBounds(nextX, nextY, matrix.length) && matrix[nextX][nextY] === null) {
-        queue.push({ x: nextX, y: nextY });
+        queue.push({ x: nextX, y: nextY, mark: currentMark + 1 });
       }
     });
-    currentMark += 1;
   }
+  return null;
 }
 
 export const findPathToTarget = (

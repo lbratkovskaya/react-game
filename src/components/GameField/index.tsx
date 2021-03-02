@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, RefObject } from 'react';
 import { Ball } from '../../types';
 import { findPathToTarget, transformStateToMatrix } from '../../utils';
 import { COLORS } from '../../utils/constants';
@@ -7,7 +7,8 @@ import './index.scss';
 interface GameFieldProps {
   fieldSize: number,
   gameFieldState: number[][],
-  moveBallToNewCell: (ball: Ball, targetRow: number, targetColumn: number) => void,
+  playSound: boolean,
+  moveBallToNewCell: (ball: Ball, targetRow: number, targetColumn: number, path: [number, number][]) => void,
 }
 
 interface GameFieldState {
@@ -15,11 +16,16 @@ interface GameFieldState {
 }
 
 export default class GameField extends Component<GameFieldProps, GameFieldState> {
+  timerId: NodeJS.Timeout;
+
+  audioRef: RefObject<HTMLAudioElement>;
+
   constructor(props: GameFieldProps) {
     super(props);
     this.state = {
       currentActive: null,
     };
+    this.audioRef = React.createRef();
   }
 
   onBallClickHandler = (
@@ -30,6 +36,16 @@ export default class GameField extends Component<GameFieldProps, GameFieldState>
   ): void => {
     document.querySelectorAll('.jumping').forEach((elem) => elem.classList.remove('jumping'));
     (event.target as HTMLImageElement).classList.add('jumping');
+    if (this.timerId) {
+      clearInterval(this.timerId);
+    }
+
+    this.playSound();
+
+    this.timerId = setInterval(() => {
+      this.playSound()
+    }, 1000);
+
     this.setState(() => ({
       currentActive: {
         row: rowIndex,
@@ -40,25 +56,41 @@ export default class GameField extends Component<GameFieldProps, GameFieldState>
     event.stopPropagation();
   }
 
+  playSound = (): void => {
+    const { playSound } = this.props;
+    if (!playSound) {
+      return;
+    }
+    const playPromise = this.audioRef.current?.play();
+    if (playPromise !== undefined) {
+      playPromise.then(function () {
+        //do play sound
+      }).catch(function (error) {
+      });
+    }
+  }
+
   onCellClickHandler = (rowIndex: number, cellIndex: number): void => {
 
     const { moveBallToNewCell } = this.props;
     const { currentActive } = this.state;
-    if(!currentActive) {
+    if (!currentActive) {
       return;
     }
-    if (this.checkTargetCellAvailable(rowIndex, cellIndex)) {
-      moveBallToNewCell(currentActive, rowIndex, cellIndex);
+    const path = this.checkTargetCellAvailable(rowIndex, cellIndex);
+    if (path != null) {
+      moveBallToNewCell(currentActive, rowIndex, cellIndex, path);
       document.querySelectorAll('.jumping').forEach((elem) => elem.classList.remove('jumping'));
+      clearInterval(this.timerId);
     }
-    this.setState({currentActive: null});
+    this.setState({ currentActive: null });
   }
 
-  checkTargetCellAvailable = (rowIndex: number, cellIndex: number): boolean => {
+  checkTargetCellAvailable = (rowIndex: number, cellIndex: number): [number, number][] => {
     const { gameFieldState, fieldSize } = this.props;
     const { currentActive } = this.state;
-    return gameFieldState[rowIndex] && gameFieldState[rowIndex][cellIndex] === 0 
-      && findPathToTarget(gameFieldState, fieldSize, [currentActive.row, currentActive.column], [rowIndex,cellIndex]) != null;
+    return gameFieldState[rowIndex] && gameFieldState[rowIndex][cellIndex] === 0
+      && findPathToTarget(gameFieldState, fieldSize, [currentActive.row, currentActive.column], [rowIndex, cellIndex]);
   }
 
   getTableCells = (rowIndex: number): JSX.Element[] => {
@@ -86,10 +118,16 @@ export default class GameField extends Component<GameFieldProps, GameFieldState>
     return result;
   }
   render() {
-    return <table>
-      <tbody>
-        {this.getTableRows()}
-      </tbody>
-    </table>
+    const { fieldSize } = this.props;
+    return (
+      <>
+        <table className={`game-table game-table-${fieldSize}`}>
+          <tbody>
+            {this.getTableRows()}
+          </tbody>
+        </table>
+        <audio ref={this.audioRef} id="music2" src="./../../sound/soccer-ball-bounce-grass_fyhd2tnu.mp3"></audio>
+      </>
+    );
   }
 }

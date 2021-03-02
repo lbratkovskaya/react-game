@@ -76,6 +76,19 @@ module.exports = (env, options) => {
             },
           ],
         },
+        {
+          test: /\.mp3$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: "[name].[ext]",
+                outputPath: "sound/",
+                publicPath: 'rsclone/clone',
+              },
+            },
+          ],
+        },
       ],
     },
     resolve: {
@@ -86,6 +99,7 @@ module.exports = (env, options) => {
       new CopyWebpackPlugin({
         patterns: [
           { from: 'src/img', to: 'img' },
+          { from: 'src/sound', to: 'sound' },
         ]
       }),
       new HtmlWebPackPlugin({
