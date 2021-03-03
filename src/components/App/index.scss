@@ -8,8 +8,11 @@ body {
 
 #root{
   padding-top: 20px;
-  padding-bottom: 50px;
+  padding-bottom: 10px;
   background: #000;
+  height: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .game-menu {
@@ -70,8 +73,9 @@ body {
 
 button.stats-button {
   color:#ccc;
-  position: absolute;
-  right: 0;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .glass {
@@ -133,6 +137,32 @@ button.stats-button {
   animation-name: fade-in;
   opacity: 1;
   visibility: visible;
+}
+
+.footer {
+  position: sticky;
+  top: 100%;
+  color: #246cab;
+  display: flex;
+  justify-content: space-between;
+
+  & a {
+    color: #246cab;
+    text-decoration: none;
+  }
+
+  & span {
+
+    & svg {
+      fill: #246cab;
+      width: 40px;
+    }
+
+    & > h6 {
+      display: inline;
+      margin: 0 8px;
+    }
+  }
 }
 
 @keyframes fade-in {

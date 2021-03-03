@@ -6,6 +6,7 @@ import FinishGameForm from '../FinishGameForm';
 import ControlsPanel from '../ControlsPanel';
 import StatisticsTable from '../StatisticsTable';
 import GlassPanel from '../GlassPanel';
+import AppFooter from './Footer';
 import { Ball } from '../../types';
 import {
   generateGameFieldState,
@@ -278,6 +279,7 @@ class App extends Component<ComponentProps<'object'>, AppState> {
         {
           <Button title="Statistics" onClick={this.toggleShowStatistics} variant="text" className="stats-button">Statistics</Button>
         }
+        <AppFooter />
       </>
     );
   }
