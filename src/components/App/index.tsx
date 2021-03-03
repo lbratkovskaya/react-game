@@ -1,10 +1,11 @@
-import React, { Component, ComponentProps, RefObject } from 'react';
-import { Button, Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
-import { VolumeOffOutlined, VolumeUpOutlined } from '@material-ui/icons';
+import React, { Component, ComponentProps,  } from 'react';
+import { Button } from '@material-ui/core';
 import GameField from '../GameField';
 import UpperPanel from '../UpperPanel';
-import OptionsSelect from './OptionsSelect';
 import FinishGameForm from '../FinishGameForm';
+import ControlsPanel from '../ControlsPanel';
+import StatisticsTable from '../StatisticsTable';
+import GlassPanel from '../GlassPanel';
 import { Ball } from '../../types';
 import {
   generateGameFieldState,
@@ -23,7 +24,6 @@ import {
 } from '../../utils';
 import './index.scss';
 
-
 interface AppState {
   nextBalls: number[],
   gameArea: number[][],
@@ -35,6 +35,7 @@ interface AppState {
   animateMove: boolean,
   gameIsDone: boolean,
   openForm: boolean,
+  openStatistics: boolean,
 }
 
 class App extends Component<ComponentProps<'object'>, AppState> {
@@ -57,6 +58,7 @@ class App extends Component<ComponentProps<'object'>, AppState> {
       animateMove,
       gameIsDone: false,
       openForm: false,
+      openStatistics: false,
     };
   }
 
@@ -157,19 +159,6 @@ class App extends Component<ComponentProps<'object'>, AppState> {
     }
   }
 
-  startNewGame = (): void => {
-    const { fieldSize, ballsCount } = this.state;
-    const startState = generateGameFieldState(fieldSize, ballsCount, []);
-    const nextBallsColors = generateNextColors(ballsCount);
-    const currentScore = 0;
-    this.setState({
-      nextBalls: nextBallsColors,
-      gameArea: startState,
-      currentScore,
-      gameIsDone: false,
-    });
-  }
-
   removeBalls = (currentGameArea: number[][], resultPath: [number, number][]): number[][] => {
     const newGameArea = [...currentGameArea];
     resultPath.forEach(([row, column]) => {
@@ -190,6 +179,19 @@ class App extends Component<ComponentProps<'object'>, AppState> {
     this.setState(() => ({ gameIsDone: true, openForm: true }));
   }
 
+  startNewGame = (): void => {
+    const { fieldSize, ballsCount } = this.state;
+    const startState = generateGameFieldState(fieldSize, ballsCount, []);
+    const nextBallsColors = generateNextColors(ballsCount);
+    const currentScore = 0;
+    this.setState({
+      nextBalls: nextBallsColors,
+      gameArea: startState,
+      currentScore,
+      gameIsDone: false,
+    });
+  }
+
   togglePlaySound = (): void => {
     this.setState((state) => ({ playSound: !state.playSound }));
   }
@@ -198,8 +200,16 @@ class App extends Component<ComponentProps<'object'>, AppState> {
     this.setState((state) => ({ animateMove: !state.animateMove }));
   }
 
+  toggleShowStatistics = (): void => {
+    this.setState((state) => ({ openStatistics: !state.openStatistics }));
+  }
+
   closeForm = (): void => {
     this.setState(() => ({ openForm: false }));
+  }
+
+  closeStatistics = (): void => {
+    this.setState(() => ({ openStatistics: false }));
   }
 
   render() {
@@ -214,57 +224,22 @@ class App extends Component<ComponentProps<'object'>, AppState> {
       animateMove,
       gameIsDone,
       openForm,
+      openStatistics,
     } = this.state;
+
     return (
       <>
-        <div className="game-menu">
-          <Button title="New Game" onClick={this.startNewGame} variant="outlined">New Game</Button>
-          <OptionsSelect
-            fieldName="fieldSize"
-            fieldTitle="Field Size"
-            onSelectValueChange={this.setFieldSize}
-            currentValue={fieldSize}
-            options={[
-              {
-                title: '9',
-                value: 9,
-              },
-              {
-                title: '13',
-                value: 13,
-              },
-              {
-                title: '17',
-                value: 17,
-              }
-            ]} />
-          <OptionsSelect
-            fieldName="ballSize"
-            fieldTitle="Next Balls Size"
-            onSelectValueChange={this.setNextBallsSize}
-            currentValue={ballsCount}
-            options={[
-              {
-                title: '3',
-                value: 3,
-              },
-              {
-                title: '5',
-                value: 5,
-              },
-              {
-                title: '7',
-                value: 7,
-              }
-            ]} />
-          <FormControlLabel
-            control={<Checkbox checked={animateMove} onChange={this.toggleAnimateMove} color="default" />}
-            label="Animate Move"
-          />
-          <IconButton title="New Game" onClick={this.togglePlaySound}>
-            {playSound ? <VolumeOffOutlined /> : <VolumeUpOutlined />}
-          </IconButton>
-        </div>
+        <ControlsPanel
+          fieldSize={fieldSize}
+          ballsCount={ballsCount}
+          animateMove={animateMove}
+          playSound={playSound}
+          startNewGame={this.startNewGame}
+          setFieldSize={this.setFieldSize}
+          setNextBallsSize={this.setNextBallsSize}
+          toggleAnimateMove={this.toggleAnimateMove}
+          togglePlaySound={this.togglePlaySound}
+        />
         <UpperPanel nextColors={nextBalls} topScore={topScore} currentScore={currentScore} />
         <div className={`main-panel main-panel-${fieldSize}`}>
           <div className="left">
@@ -285,12 +260,23 @@ class App extends Component<ComponentProps<'object'>, AppState> {
             <div
               id="bknight"
               className="bgg2"
-              style={{height: `${currentScore / topScore * MAX_SCORE_HEIGHT}px`}}></div>
+              style={{ height: `${currentScore / topScore * MAX_SCORE_HEIGHT}px` }}></div>
             <div id="knight" className="knight"></div>
           </div>
         </div>
+        { openStatistics && <GlassPanel doOpen={openStatistics} onCloseHandler={this.closeStatistics}>
+          <StatisticsTable />
+        </GlassPanel>
+        }
 
-        {gameIsDone && openForm && <FinishGameForm score={currentScore} closeForm={this.closeForm} />}
+        {gameIsDone && openForm && <GlassPanel doOpen={gameIsDone && openForm} onCloseHandler={this.closeForm}>
+          <FinishGameForm score={currentScore} closeForm={this.closeForm} />
+        </GlassPanel>
+        }
+
+        {
+          <Button title="Statistics" onClick={this.toggleShowStatistics} variant="text" className="stats-button">Statistics</Button>
+        }
       </>
     );
   }

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import API from '../../utils/API';
 
 interface FinishGameProps {
-  // finalGameState: number[][],
   score: number,
   closeForm: () => void,
 }
@@ -23,23 +22,19 @@ export default function FinishGameForm(props: FinishGameProps): JSX.Element {
         score,
         date: new Date(),
       }, {
-        withCredentials: true,
-      }).then(() => {
-        closeForm();
+      withCredentials: true,
+    }).then(() => {
+      closeForm();
     });
-
-
   }
 
   return (
-    <div className="glass">
-      <form onSubmit={handleSubmit}>
-        <label>
-          Type your name:
+    <form onSubmit={handleSubmit}>
+      <label>
+        Type your name:
           <input type="text" value={userName} onChange={handleChange} />
-        </label>
-        <input type="submit" className="submit-button" value="OK" />
-      </form>
-    </div>
+      </label>
+      <input type="submit" className="submit-button" value="OK" />
+    </form>
   );
 }
