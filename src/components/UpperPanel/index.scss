@@ -1,0 +1,50 @@
+.upperPanel {
+  display: flex;
+  justify-content: space-around;
+  background: #ccc;
+  border: 2px #eee solid;
+  height: 40px;
+  margin: auto;
+  max-width: 800px;
+  position: relative;
+  
+  table {
+    position: relative;
+    background: #777;
+    .tableCell {
+      background: #ccc;
+      border-top: 2px #eee solid;
+      border-right: 2px #eee solid;
+      border-left: 2px #aaa solid;
+      border-bottom: 2px #aaa solid;
+      text-align: center;
+      vertical-align: middle;
+    }
+  }
+}
+
+.nextColors {
+  .tableCell {
+    width: 30px;
+    height: 30px;
+
+    .ball-image {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+    }
+  }
+}
+
+.top-score, .current-score {
+  width: 100px;
+  height: 25px;
+  font: 12pt bold;
+  font-family: 'Roboto', sans-serif;
+  color: #32cd32;
+  background: #000;
+  border: 2px #aaa solid;
+  line-height: 160%;
+  text-align: right;
+  padding-right: 5px;
+}
