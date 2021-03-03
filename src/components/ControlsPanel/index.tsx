@@ -72,8 +72,8 @@ export default function ControlsPanel(props: ControlsPanelProps): JSX.Element {
         control={<Checkbox checked={animateMove} onChange={toggleAnimateMove} color="default" />}
         label="Animate Move"
       />
-      <IconButton title={playSound ? 'Volume Off' : 'Volume On'} onClick={togglePlaySound}>
-        {playSound ? <VolumeOffOutlined /> : <VolumeUpOutlined />}
+      <IconButton title={playSound ? 'Volume On' : 'Volume Off'} onClick={togglePlaySound}>
+        {playSound ? <VolumeUpOutlined /> : <VolumeOffOutlined />}
       </IconButton>
     </div>
   );

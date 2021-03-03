@@ -10,7 +10,11 @@ import './index.scss';
 interface OptionsSelectProps {
   fieldName: string,
   fieldTitle: string,
-  onSelectValueChange: (event: object) => void,
+  onSelectValueChange: (event: {
+    target: {
+      value: any;
+    }
+  }) => void,
   currentValue: number,
   options: {
     title: string,

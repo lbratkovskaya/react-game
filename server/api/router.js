@@ -5,6 +5,6 @@ const { saveScore, getUsers } = require('./controller');
 const apiRouter = express.Router();
 
 apiRouter.route('/save_score').put(saveScore);
-apiRouter.route('/get_users').put(getUsers);
+apiRouter.route('/get_users').get(getUsers);
 
 module.exports = apiRouter;

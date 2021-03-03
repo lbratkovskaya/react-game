@@ -1,11 +1,11 @@
 import React, { Component, RefObject } from 'react';
 import { Ball } from '../../types';
-import { findPathToTarget, transformStateToMatrix } from '../../utils';
-import { COLORS } from '../../utils/constants';
+import { findPathToTarget, COLORS } from '../../utils';
 import './index.scss';
 
 interface GameFieldProps {
   fieldSize: number,
+  ballsCount: number,
   gameFieldState: number[][],
   playSound: boolean,
   moveBallToNewCell: (ball: Ball, targetRow: number, targetColumn: number, path: [number, number][]) => void,
@@ -13,6 +13,7 @@ interface GameFieldProps {
 
 interface GameFieldState {
   currentActive: Ball,
+  imagesLoaded: boolean,
 }
 
 export default class GameField extends Component<GameFieldProps, GameFieldState> {
@@ -20,12 +21,38 @@ export default class GameField extends Component<GameFieldProps, GameFieldState>
 
   audioRef: RefObject<HTMLAudioElement>;
 
+  imagesCache: HTMLImageElement[];
+
   constructor(props: GameFieldProps) {
     super(props);
     this.state = {
       currentActive: null,
+      imagesLoaded: false,
     };
     this.audioRef = React.createRef();
+    this.imagesCache = [];
+    const checkImage = (path: string, index: number) =>
+    new Promise((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => {
+          this.imagesCache[index] = img;
+          resolve(`./img/${path}`);
+        }
+        img.onerror = () => reject()
+
+        img.src = `./img/${path}`;
+    })
+    Promise.all(
+    COLORS.map(checkImage)).then(() => this.setState({imagesLoaded: true}))
+  }
+
+  componentDidUpdate = (prevProps: GameFieldProps) => {
+    if ((prevProps.fieldSize !== this.props.fieldSize)
+      || (prevProps.ballsCount !== this.props.ballsCount)) {
+      if (this.timerId) {
+        clearInterval(this.timerId);
+      }
+    }
   }
 
   onBallClickHandler = (
@@ -81,8 +108,8 @@ export default class GameField extends Component<GameFieldProps, GameFieldState>
       moveBallToNewCell(currentActive, rowIndex, cellIndex, path);
       document.querySelectorAll('.jumping').forEach((elem) => elem.classList.remove('jumping'));
       clearInterval(this.timerId);
+      this.setState({ currentActive: null });
     }
-    this.setState({ currentActive: null });
   }
 
   checkTargetCellAvailable = (rowIndex: number, cellIndex: number): [number, number][] => {
@@ -100,7 +127,7 @@ export default class GameField extends Component<GameFieldProps, GameFieldState>
       const ball = ballCode > 0 && ballCode || null;
       result.push(<td className="tableCell" key={`${rowIndex.toString()}${i.toString()}`} onClick={() => this.onCellClickHandler(rowIndex, i)}>
         {
-          ball !== null && (<img className="ball-image" src={`./img/${COLORS[ball - 1]}`} alt="" onClick={(event) => this.onBallClickHandler(event, rowIndex, i, ball)}></img>
+          ball !== null && this.imagesCache[ball - 1] && (<img className="ball-image" src={this.imagesCache[ball - 1].src} alt="" onClick={(event) => this.onBallClickHandler(event, rowIndex, i, ball)}></img>
           )
         }
       </td>);

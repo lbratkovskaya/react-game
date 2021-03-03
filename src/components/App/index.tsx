@@ -68,7 +68,7 @@ class App extends Component<ComponentProps<'object'>, AppState> {
 
   componentGracefulUnmount = (): void => {
     const { gameArea, currentScore, topScore, nextBalls, playSound, animateMove } = this.state;
-    saveToLocalStorage(gameArea, currentScore, topScore, nextBalls, playSound, animateMove);
+    saveToLocalStorage(gameArea, currentScore, Math.max(currentScore, topScore), nextBalls, playSound, animateMove);
   };
 
   componentWillUnmount() {
@@ -120,11 +120,11 @@ class App extends Component<ComponentProps<'object'>, AppState> {
             column,
             colorIndex: ball.colorIndex,
           }, path, currentIndex + 1);
-        }, 70);
+        }, 100);
       } else {
         setTimeout(() => {
           this.finishMove();
-        }, 70);
+        }, 100);
       }
     });
   }
@@ -251,6 +251,7 @@ class App extends Component<ComponentProps<'object'>, AppState> {
           <GameField
             playSound={playSound}
             fieldSize={fieldSize}
+            ballsCount={ballsCount}
             gameFieldState={gameArea}
             moveBallToNewCell={this.moveBallToNewCell}
           />

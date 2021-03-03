@@ -15,7 +15,8 @@ export default function FinishGameForm(props: FinishGameProps): JSX.Element {
     setName(inputName);
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     API.put('api/save_score',
       {
         userName,
@@ -23,9 +24,12 @@ export default function FinishGameForm(props: FinishGameProps): JSX.Element {
         date: new Date(),
       }, {
       withCredentials: true,
-    }).then(() => {
-      closeForm();
+    }).then((res) => {
+      if (res.status === 200) {
+        closeForm();
+      }
     });
+
   }
 
   return (

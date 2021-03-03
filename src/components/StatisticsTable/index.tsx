@@ -59,37 +59,37 @@ export default function StatisticsTable(): JSX.Element {
   useEffect(() => {
     let isMounted = true;
     const fetchStr = 'api/get_users';
-    if (isMounted) {
-      API.get(fetchStr)
-        .then((res) => res.data)
-        .then((data) => {
-          if (!data) {
-            return;
-          }
+    API.get(fetchStr)
+      .then((res) => res.data)
+      .then((data) => {
+        if (!data) {
+          return;
+        }
 
-          const result: {
-            userName: string,
-            date?: string,
-            score?: number,
-            count?: number,
-          }[] = [];
+        const result: {
+          userName: string,
+          date?: string,
+          score?: number,
+          count?: number,
+        }[] = [];
 
-          data.forEach((userRow: {
-            userName: string,
-            history: { date: string, score: number }[]
-          }) => {
-            result.push({ userName: userRow.userName, count: history.length + 1 });
+        data.forEach((userRow: {
+          userName: string,
+          history: { date: string, score: number }[]
+        }) => {
+          result.push({ userName: userRow.userName, count: history.length + 1 });
 
-            userRow.history.forEach((histItem: { date: string, score: number }) => {
-              result.push({ userName: '', date: histItem.date, score: histItem.score });
-            })
-          });
-
-          setRows(result);
+          userRow.history.forEach((histItem: { date: string, score: number }) => {
+            result.push({ userName: '', date: histItem.date, score: histItem.score });
+          })
         });
-    }
+
+        if (isMounted) {
+          setRows(result);
+        }
+      });
     return () => { isMounted = false };
-  },[]);
+  }, []);
 
   return (
     <div className="glass">
