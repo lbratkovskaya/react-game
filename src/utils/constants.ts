@@ -1,4 +1,4 @@
-export const COLORS = ["green.png", "blue.png", "pink.png", "yellow.png", "brown.png", "red.png", "navy.png"];
+export const COLORS = ['green.png', 'blue.png', 'pink.png', 'yellow.png', 'brown.png', 'red.png', 'navy.png'];
 
 export const DEFAULT_FIELD_SIZE = 9;
 

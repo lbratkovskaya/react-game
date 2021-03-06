@@ -11,13 +11,13 @@ interface UpperPanelProps {
 export default function UpperPanel(props: UpperPanelProps): JSX.Element {
   const { nextColors, topScore, currentScore } = props;
 
-  const getNextColorsRow = (): JSX.Element[] => {
-    return nextColors.map((color, index) => (
-      <td className="tableCell" key={`${index.toString()}`}>
-        <img className="ball-image" src={`./img/${COLORS[color - 1]}`} alt=""></img>
+  const getNextColorsRow = (): JSX.Element[] => (
+    nextColors.map((color) => (
+      <td className="tableCell" key={`${color.toString()}`}>
+        <img className="ball-image" src={`./img/${COLORS[color - 1]}`} alt="" />
       </td>
-    ));
-  }
+    ))
+  );
 
   return (
     <div className="upperPanel">
@@ -25,7 +25,7 @@ export default function UpperPanel(props: UpperPanelProps): JSX.Element {
         <span className="score">
           {topScore}
         </span>
-        </div>
+      </div>
       <table className="nextColors">
         <tbody>
           <tr>

@@ -16,8 +16,8 @@ type TableColumn = {
   label: string,
   minWidth: number,
   align?: 'right' | 'left' | 'center' | 'justify' | 'inherit',
-  format?: (value: any) => string,
-}
+  format?: (value: string | number) => string,
+};
 
 const useStyles = makeStyles({
   root: {
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
   },
   head: {
     fontWeight: 600,
-  }
+  },
 });
 
 export default function StatisticsTable(): JSX.Element {
@@ -44,8 +44,7 @@ export default function StatisticsTable(): JSX.Element {
       label: 'Game Date',
       minWidth: 100,
       align: 'right',
-      format: (value: string) =>
-        new Date(value).toLocaleString('en-US'),
+      format: (value: string) => new Date(value).toLocaleString('en-US'),
     },
     {
       id: 'score',
@@ -77,18 +76,21 @@ export default function StatisticsTable(): JSX.Element {
           userName: string,
           history: { date: string, score: number }[]
         }) => {
-          result.push({ userName: userRow.userName, count: history.length + 1 });
+          result.push({ userName: userRow.userName, count: userRow.history.length + 1 });
 
           userRow.history.forEach((histItem: { date: string, score: number }) => {
             result.push({ userName: '', date: histItem.date, score: histItem.score });
-          })
+          });
         });
 
         if (isMounted) {
           setRows(result);
         }
+      })
+      .catch((error) => {
+        setRows([{ userName: `Could not load statistic data: ${error.toString()}` }]);
       });
-    return () => { isMounted = false };
+    return () => { isMounted = false; };
   }, []);
 
   return (
@@ -110,9 +112,9 @@ export default function StatisticsTable(): JSX.Element {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => {
-                return row.count ?
-                  (
+              {rows.map((row) => (
+                row.count
+                  ? (
                     <TableRow
                       hover
                       role="checkbox"
@@ -136,12 +138,12 @@ export default function StatisticsTable(): JSX.Element {
                         );
                       })}
                     </TableRow>
-                  );
-              })}
+                  )
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
     </div>
-  )
+  );
 }

@@ -12,7 +12,7 @@ interface OptionsSelectProps {
   fieldTitle: string,
   onSelectValueChange: (event: {
     target: {
-      value: any;
+      value: unknown;
     }
   }) => void,
   currentValue: number,
@@ -23,10 +23,17 @@ interface OptionsSelectProps {
 }
 
 export default function OptionsSelect(props: OptionsSelectProps): JSX.Element {
+  const {
+    fieldName,
+    fieldTitle,
+    options,
+    currentValue,
+    onSelectValueChange,
+  } = props;
 
-  const { fieldName, fieldTitle, options, currentValue, onSelectValueChange } = props;
-
-  const selectOptions = options.map((opt) => <MenuItem key={opt.value} value={opt.value}>{opt.title}</MenuItem>);
+  const selectOptions = options.map((opt) => (
+    <MenuItem key={opt.value} value={opt.value}>{opt.title}</MenuItem>
+  ));
 
   return (
     <FormControl className="form-control">
@@ -40,5 +47,5 @@ export default function OptionsSelect(props: OptionsSelectProps): JSX.Element {
         {selectOptions}
       </Select>
     </FormControl>
-  )
+  );
 }

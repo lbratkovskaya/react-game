@@ -1,4 +1,4 @@
-import React, { Component, ComponentProps,  } from 'react';
+import React, { Component, ComponentProps } from 'react';
 import { Button } from '@material-ui/core';
 import GameField from '../GameField';
 import UpperPanel from '../UpperPanel';
@@ -65,16 +65,16 @@ class App extends Component<ComponentProps<'object'>, AppState> {
 
   componentDidMount(): void {
     window.addEventListener('beforeunload', this.componentGracefulUnmount);
-  }
+  };
+
+  componentWillUnmount(): void {
+    window.removeEventListener('beforeunload', this.componentGracefulUnmount);
+  };
 
   componentGracefulUnmount = (): void => {
     const { gameArea, currentScore, topScore, nextBalls, playSound, animateMove } = this.state;
     saveToLocalStorage(gameArea, currentScore, Math.max(currentScore, topScore), nextBalls, playSound, animateMove);
   };
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.componentGracefulUnmount);
-  }
 
   updateCurrentBalls = (currGameArea: number[][]): void => {
     const { fieldSize, ballsCount, nextBalls } = this.state;
@@ -82,7 +82,12 @@ class App extends Component<ComponentProps<'object'>, AppState> {
       this.showFinishGameForm();
       return;
     }
-    const gameAreaWithAdditionalBalls = generateGameFieldState(fieldSize, ballsCount, currGameArea, nextBalls);
+    const gameAreaWithAdditionalBalls = generateGameFieldState(
+      fieldSize,
+      ballsCount,
+      currGameArea,
+      nextBalls
+    );
     if (gameIsDone(gameAreaWithAdditionalBalls, ballsCount)) {
       this.showFinishGameForm();
       return;
@@ -90,21 +95,21 @@ class App extends Component<ComponentProps<'object'>, AppState> {
     const newNextBalls = generateNextColors(ballsCount);
     const resultPath: [number, number][] = checkForScore(fieldSize, gameAreaWithAdditionalBalls);
     if (resultPath.length === 0) {
-
       this.setState(() => ({ gameArea: gameAreaWithAdditionalBalls, nextBalls: newNextBalls }));
-    }
-    else {
+    } else {
       const gameStateArterBallsRemoved = this.removeBalls(gameAreaWithAdditionalBalls, resultPath);
       this.setState(() => ({ gameArea: gameStateArterBallsRemoved, nextBalls: newNextBalls }));
     }
-  }
+  };
 
   updateCurrentScore = (currentGameArea: number[][], resultPath: [number, number][]): void => {
-    const { topScore } = this.state;
     const newGameArea = this.removeBalls(currentGameArea, resultPath);
     const newScore = SCORE_BY_LINE_LENGTH[resultPath.length.toString()];
-    this.setState((state) => ({ gameArea: newGameArea, currentScore: state.currentScore + newScore }));
-  }
+    this.setState((state) => ({
+      gameArea: newGameArea,
+      currentScore: state.currentScore + newScore,
+    }));
+  };
 
   doMoveToXY = (ball: Ball, path: [number, number][], currentIndex: number): void => {
     const { gameArea } = this.state;
@@ -128,7 +133,7 @@ class App extends Component<ComponentProps<'object'>, AppState> {
         }, 100);
       }
     });
-  }
+  };
 
   finishMove = (): void => {
     const { gameArea, fieldSize } = this.state;
@@ -136,13 +141,12 @@ class App extends Component<ComponentProps<'object'>, AppState> {
     const resultPath: [number, number][] = checkForScore(fieldSize, newGameArea);
     if (resultPath.length === 0) {
       this.updateCurrentBalls(newGameArea);
-    }
-    else {
+    } else {
       this.updateCurrentScore(newGameArea, resultPath);
     }
-  }
+  };
 
-  moveBallToNewCell = (ball: Ball, row: number, column: number, path: [number, number][]) => {
+  moveBallToNewCell = (ball: Ball, row: number, column: number, path: [number, number][]): void => {
     const { gameArea, fieldSize, animateMove } = this.state;
     if (animateMove) {
       this.doMoveToXY(ball, path, 0);
@@ -153,12 +157,11 @@ class App extends Component<ComponentProps<'object'>, AppState> {
       const resultPath: [number, number][] = checkForScore(fieldSize, newGameArea);
       if (resultPath.length === 0) {
         this.updateCurrentBalls(newGameArea);
-      }
-      else {
+      } else {
         this.updateCurrentScore(newGameArea, resultPath);
       }
     }
-  }
+  };
 
   removeBalls = (currentGameArea: number[][], resultPath: [number, number][]): number[][] => {
     const newGameArea = [...currentGameArea];
@@ -166,19 +169,19 @@ class App extends Component<ComponentProps<'object'>, AppState> {
       newGameArea[row][column] = 0;
     });
     return newGameArea;
-  }
+  };
 
   setFieldSize = (event: { target: { value: number } }): void => {
     this.setState({ fieldSize: event.target.value }, () => this.startNewGame());
-  }
+  };
 
   setNextBallsSize = (event: { target: { value: number } }): void => {
     this.setState({ ballsCount: event.target.value }, () => this.startNewGame());
-  }
+  };
 
   showFinishGameForm = (): void => {
     this.setState(() => ({ gameIsDone: true, openForm: true }));
-  }
+  };
 
   startNewGame = (): void => {
     const { fieldSize, ballsCount } = this.state;
@@ -191,29 +194,29 @@ class App extends Component<ComponentProps<'object'>, AppState> {
       currentScore,
       gameIsDone: false,
     });
-  }
+  };
 
   togglePlaySound = (): void => {
     this.setState((state) => ({ playSound: !state.playSound }));
-  }
+  };
 
   toggleAnimateMove = (): void => {
     this.setState((state) => ({ animateMove: !state.animateMove }));
-  }
+  };
 
   toggleShowStatistics = (): void => {
     this.setState((state) => ({ openStatistics: !state.openStatistics }));
-  }
+  };
 
   closeForm = (): void => {
     this.setState(() => ({ openForm: false }));
-  }
+  };
 
   closeStatistics = (): void => {
     this.setState(() => ({ openStatistics: false }));
-  }
+  };
 
-  render() {
+  render(): JSX.Element {
     const {
       nextBalls,
       gameArea,
@@ -245,9 +248,9 @@ class App extends Component<ComponentProps<'object'>, AppState> {
         <div className={`main-panel main-panel-${fieldSize}`}>
           <div className="left">
             <div id="lname" className="name-left">Король</div>
-            <div className="cbottom"></div>
-            <div id="b-king" className="bgg1"></div>
-            <div id="king" className="king"></div>
+            <div className="cbottom" />
+            <div id="b-king" className="bgg1" />
+            <div id="king" className="king" />
           </div>
           <GameField
             playSound={playSound}
@@ -258,27 +261,30 @@ class App extends Component<ComponentProps<'object'>, AppState> {
           />
           <div className="right">
             <div id="rname" className="name-right">Претендент</div>
-            <div className="cbottom"></div>
+            <div className="cbottom" />
             <div
               id="bknight"
               className="bgg2"
-              style={{ height: `${currentScore / topScore * MAX_SCORE_HEIGHT}px` }}></div>
-            <div id="knight" className="knight"></div>
+              style={{ height: `${(currentScore / topScore) * MAX_SCORE_HEIGHT}px` }}>
+            </div>
+            <div id="knight" className="knight" />
           </div>
         </div>
-        { openStatistics && <GlassPanel doOpen={openStatistics} onCloseHandler={this.closeStatistics}>
-          <StatisticsTable />
-        </GlassPanel>
+        { openStatistics && (
+          <GlassPanel doOpen={openStatistics} onCloseHandler={this.closeStatistics}>
+            <StatisticsTable />
+          </GlassPanel>
+        )
         }
 
-        {gameIsDone && openForm && <GlassPanel doOpen={gameIsDone && openForm} onCloseHandler={this.closeForm}>
-          <FinishGameForm score={currentScore} closeForm={this.closeForm} />
-        </GlassPanel>
+        {gameIsDone && openForm && (
+          <GlassPanel doOpen={gameIsDone && openForm} onCloseHandler={this.closeForm}>
+            <FinishGameForm score={currentScore} closeForm={this.closeForm} />
+          </GlassPanel>
+        )
         }
 
-        {
-          <Button title="Statistics" onClick={this.toggleShowStatistics} variant="text" className="stats-button">Statistics</Button>
-        }
+        <Button title="Statistics" onClick={this.toggleShowStatistics} variant="text" className="stats-button">Statistics</Button>
         <AppFooter />
       </>
     );

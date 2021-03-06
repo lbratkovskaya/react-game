@@ -17,15 +17,10 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
   if (err) {
     throw err;
   } 
-
-  console.log('MongoDB is connected');
 });
 
 app
 .use(cors(CORS))
 .use(bodyParser.json())
-.use('/api', apiRouter);
-
-app.listen(PORT, () => {
-  console.log(`used ${PORT} port for server`);
-});
+.use('/api', apiRouter)
+.listen(PORT);

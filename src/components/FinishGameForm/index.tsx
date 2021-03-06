@@ -13,7 +13,7 @@ export default function FinishGameForm(props: FinishGameProps): JSX.Element {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const inputName = event.target.value;
     setName(inputName);
-  }
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,21 +22,23 @@ export default function FinishGameForm(props: FinishGameProps): JSX.Element {
         userName,
         score,
         date: new Date(),
-      }, {
-      withCredentials: true,
-    }).then((res) => {
-      if (res.status === 200) {
-        closeForm();
+      },
+      {
+        withCredentials: true,
       }
-    });
-
-  }
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          closeForm();
+        }
+      });
+  };
 
   return (
     <form onSubmit={handleSubmit}>
       <label>
         Type your name:
-          <input type="text" value={userName} onChange={handleChange} />
+        <input type="text" value={userName} onChange={handleChange} />
       </label>
       <input type="submit" className="submit-button" value="OK" />
     </form>

@@ -12,10 +12,14 @@ export default function GlassPanel(props: PropsWithChildren<GlassPanelProps>): J
   return (
     <div className={`glass ${isOpen ? 'fade-in' : 'fade-out'}`}>
       {children}
-      <div className="close-button" onClick={() => {
-        setOpen(false);
-        onCloseHandler();
-      }}>
+      <div
+        className="close-button"
+        role="button"
+        onClick={() => {
+          setOpen(false);
+          onCloseHandler();
+        }}
+      >
         <Clear />
       </div>
     </div>

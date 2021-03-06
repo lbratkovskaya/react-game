@@ -1,5 +1,10 @@
 import React from 'react';
-import { Button, Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  IconButton
+} from '@material-ui/core';
 import { VolumeOffOutlined, VolumeUpOutlined } from '@material-ui/icons';
 import OptionsSelect from '../App/OptionsSelect';
 
@@ -47,8 +52,10 @@ export default function ControlsPanel(props: ControlsPanelProps): JSX.Element {
           {
             title: '17',
             value: 17,
-          }
-        ]} />
+          },
+        ]
+        }
+      />
       <OptionsSelect
         fieldName="ballSize"
         fieldTitle="Next Balls Size"
@@ -66,8 +73,10 @@ export default function ControlsPanel(props: ControlsPanelProps): JSX.Element {
           {
             title: '7',
             value: 7,
-          }
-        ]} />
+          },
+        ]
+        }
+      />
       <FormControlLabel
         control={<Checkbox checked={animateMove} onChange={toggleAnimateMove} color="default" />}
         label="Animate Move"

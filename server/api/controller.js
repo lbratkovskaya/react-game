@@ -11,7 +11,6 @@ const saveScore = (req, res) => {
         throw err;
       }
       if (doc) {
-        console.log(`Favorites of ${userName} were successfully updated`);
         res.send('Success');
       } else {
         const newUser = new User({

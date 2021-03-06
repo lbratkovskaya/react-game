@@ -23,7 +23,7 @@ import {
   MAX_SCORE_HEIGHT,
 } from './constants';
 
-export { 
+export {
   findPathToTarget,
   generateColorIndex,
   generateGameFieldState,
