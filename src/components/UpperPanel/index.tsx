@@ -1,12 +1,7 @@
 import React from 'react';
+import { UpperPanelProps } from './types';
 import { COLORS } from '../../utils';
 import './index.scss';
-
-interface UpperPanelProps {
-  nextColors: number[],
-  topScore: number,
-  currentScore: number,
-}
 
 export default function UpperPanel(props: UpperPanelProps): JSX.Element {
   const { nextColors, topScore, currentScore } = props;

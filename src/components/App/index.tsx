@@ -8,6 +8,7 @@ import StatisticsTable from '../StatisticsTable';
 import GlassPanel from '../GlassPanel';
 import AppFooter from './Footer';
 import { Ball } from '../../types';
+import { AppState } from './types';
 import {
   generateGameFieldState,
   generateNextColors,
@@ -24,20 +25,6 @@ import {
   getStoredAnimateSettings,
 } from '../../utils';
 import './index.scss';
-
-interface AppState {
-  nextBalls: number[],
-  gameArea: number[][],
-  fieldSize: number,
-  ballsCount: number,
-  currentScore: number,
-  topScore: number,
-  playSound: boolean,
-  animateMove: boolean,
-  gameIsDone: boolean,
-  openForm: boolean,
-  openStatistics: boolean,
-}
 
 class App extends Component<ComponentProps<'object'>, AppState> {
   constructor(props: ComponentProps<'object'>) {

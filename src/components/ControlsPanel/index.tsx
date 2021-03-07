@@ -7,18 +7,8 @@ import {
 } from '@material-ui/core';
 import { VolumeOffOutlined, VolumeUpOutlined } from '@material-ui/icons';
 import OptionsSelect from '../App/OptionsSelect';
+import { ControlsPanelProps } from './types';
 
-interface ControlsPanelProps {
-  fieldSize: number,
-  ballsCount: number,
-  animateMove: boolean,
-  playSound: boolean,
-  startNewGame: () => void,
-  setFieldSize: (event: { target: { value: number } }) => void,
-  setNextBallsSize: (event: { target: { value: number } }) => void,
-  toggleAnimateMove: () => void,
-  togglePlaySound: () => void,
-}
 
 export default function ControlsPanel(props: ControlsPanelProps): JSX.Element {
   const {

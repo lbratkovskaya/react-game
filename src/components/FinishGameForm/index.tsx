@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
+import { FinishGameProps } from './types';
 import API from '../../utils/API';
 
-interface FinishGameProps {
-  score: number,
-  closeForm: () => void,
-}
 export default function FinishGameForm(props: FinishGameProps): JSX.Element {
   const [userName, setName] = useState('');
 

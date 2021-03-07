@@ -9,15 +9,8 @@ import {
   TableBody,
   TableRow,
 } from '@material-ui/core';
+import { TableColumn } from './types';
 import API from '../../utils/API';
-
-type TableColumn = {
-  id: string,
-  label: string,
-  minWidth: number,
-  align?: 'right' | 'left' | 'center' | 'justify' | 'inherit',
-  format?: (value: string | number) => string,
-};
 
 const useStyles = makeStyles({
   root: {

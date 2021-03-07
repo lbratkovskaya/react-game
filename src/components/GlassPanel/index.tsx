@@ -1,10 +1,7 @@
 import React, { PropsWithChildren, useState } from 'react';
 import { Clear } from '@material-ui/icons';
+import { GlassPanelProps } from './types';
 
-interface GlassPanelProps {
-  doOpen: boolean,
-  onCloseHandler: () => void,
-}
 export default function GlassPanel(props: PropsWithChildren<GlassPanelProps>): JSX.Element {
   const { children, doOpen, onCloseHandler } = props;
   const [isOpen, setOpen] = useState(doOpen);

@@ -1,25 +1,7 @@
 import React, { Component, RefObject } from 'react';
-import { Ball } from '../../types';
+import { GameFieldProps, GameFieldState } from './types';
 import { findPathToTarget, COLORS } from '../../utils';
 import './index.scss';
-
-interface GameFieldProps {
-  fieldSize: number,
-  ballsCount: number,
-  gameFieldState: number[][],
-  playSound: boolean,
-  moveBallToNewCell: (
-    ball: Ball,
-    targetRow: number,
-    targetColumn: number,
-    path: [number, number][],
-  ) => void,
-}
-
-interface GameFieldState {
-  currentActive: Ball,
-  imagesLoaded: boolean,
-}
 
 export default class GameField extends Component<GameFieldProps, GameFieldState> {
   timerId: NodeJS.Timeout;

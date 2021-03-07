@@ -5,22 +5,8 @@ import {
   MenuItem,
   Select,
 } from '@material-ui/core';
+import { OptionsSelectProps } from './types';
 import './index.scss';
-
-interface OptionsSelectProps {
-  fieldName: string,
-  fieldTitle: string,
-  onSelectValueChange: (event: {
-    target: {
-      value: unknown;
-    }
-  }) => void,
-  currentValue: number,
-  options: {
-    title: string,
-    value: number,
-  }[]
-}
 
 export default function OptionsSelect(props: OptionsSelectProps): JSX.Element {
   const {
