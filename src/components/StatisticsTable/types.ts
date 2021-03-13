@@ -13,3 +13,20 @@ export type TableColumn = {
   align?: TableColumnAlign,
   format?: (value: string | number) => string,
 };
+
+export type UserHistoryItem = {
+  date: string,
+  score: number,
+};
+
+export type GetUsersFetchResult = {
+  userName: string,
+  history: Array<UserHistoryItem>,
+};
+
+export type PrintResultRow = {
+  userName: string,
+  date?: string,
+  score?: number,
+  count?: number,
+};

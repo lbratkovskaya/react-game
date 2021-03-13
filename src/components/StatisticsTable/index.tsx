@@ -9,7 +9,12 @@ import {
   TableBody,
   TableRow,
 } from '@material-ui/core';
-import { TableColumn, TableColumnAlign } from './types';
+import {
+  GetUsersFetchResult,
+  PrintResultRow,
+  TableColumn,
+  TableColumnAlign,
+} from './types';
 import API from '../../utils/API';
 
 const useStyles = makeStyles({
@@ -48,27 +53,26 @@ export default function StatisticsTable(): JSX.Element {
     },
   ];
 
+  const fetchGetUsersFromAPI = (): Promise<{
+    data: Array<GetUsersFetchResult>,
+  }> => {
+    const fetchStr = 'api/get_users';
+    return API.get(fetchStr);
+  };
+
   useEffect(() => {
     let isMounted = true;
-    const fetchStr = 'api/get_users';
-    API.get(fetchStr)
+
+    fetchGetUsersFromAPI()
       .then((res) => res.data)
       .then((data) => {
         if (!data) {
           return;
         }
 
-        const result: {
-          userName: string,
-          date?: string,
-          score?: number,
-          count?: number,
-        }[] = [];
+        const result: Array<PrintResultRow> = [];
 
-        data.forEach((userRow: {
-          userName: string,
-          history: { date: string, score: number }[]
-        }) => {
+        data.forEach((userRow: GetUsersFetchResult) => {
           result.push({ userName: userRow.userName, count: userRow.history.length + 1 });
 
           userRow.history.forEach((histItem: { date: string, score: number }) => {
