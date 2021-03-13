@@ -9,7 +9,7 @@ import {
   TableBody,
   TableRow,
 } from '@material-ui/core';
-import { TableColumn } from './types';
+import { TableColumn, TableColumnAlign } from './types';
 import API from '../../utils/API';
 
 const useStyles = makeStyles({
@@ -36,14 +36,14 @@ export default function StatisticsTable(): JSX.Element {
       id: 'date',
       label: 'Game Date',
       minWidth: 100,
-      align: 'right',
+      align: TableColumnAlign.Right,
       format: (value: string) => new Date(value).toLocaleString('en-US'),
     },
     {
       id: 'score',
       label: 'Score',
       minWidth: 70,
-      align: 'right',
+      align: TableColumnAlign.Right,
       format: (value: number) => value.toLocaleString('en-US'),
     },
   ];
