@@ -1,0 +1,186 @@
+.game-table {
+  position: relative;
+  background: #777;
+
+  &.game-table-9 {
+    min-width: 470px;
+  }
+  &.game-table-13 {
+    min-width: 470px;
+  }
+  &.game-table-17 {
+    min-width: 478px;
+  }
+
+  .tableCell {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    background: #ccc;
+    border-top: 2px #eee solid;
+    border-right: 2px #eee solid;
+    border-left: 2px #aaa solid;
+    border-bottom: 2px #aaa solid;
+
+    .ball-image {
+      position: relative;
+      display: block;
+      margin: auto;
+
+      &.jumping {
+        animation: jump 1s ease-out infinite;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .game-table-17 {
+    .tableCell {
+      width: 46px;
+      height: 46px;
+      .ball-image {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .game-table-17 {
+    .tableCell {
+      width: 40px;
+      height: 40px;
+      .ball-image {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .game-table-17 {
+    .tableCell {
+      width: 34px;
+      height: 34px;
+      .ball-image {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 740px) {
+  .game-table-9 {
+    .tableCell {
+      width: 48px;
+      height: 48px;
+    }
+  }
+  .game-table-13 {
+    .tableCell {
+      width: 38px;
+      height: 38px;
+      .ball-image {
+        width: 34px;
+        height: 34px;
+      }
+    }
+  }
+  .game-table-17 {
+    .tableCell {
+      width: 28px;
+      height: 28px;
+      .ball-image {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}
+@media screen and (max-width: 600px) {
+  .game-table-13 {
+    .tableCell {
+      width: 30px;
+      height: 30px;
+      .ball-image {
+        width: 26px;
+        height: 26px;
+      }
+    }
+  }
+  .game-table-17 {
+    .tableCell {
+      width: 26px;
+      height: 26px;
+      .ball-image {
+        width: 22px;
+        height: 22px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .game-table-9 {
+    .tableCell {
+      width: 46px;
+      height: 46px;
+    }
+  }
+  .game-table-17 {
+    .tableCell {
+      width: 22px;
+      height: 22px;
+      .ball-image {
+        width: 19px;
+        height: 19px;
+      }
+    }
+  }
+}
+
+@keyframes jump {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1);
+    top: 1px;
+  }
+  30% {
+    transform: scaleY(1.05) scaleX(0.95);
+    top: 4px;
+  }
+  40% {
+    transform: scaleY(0.85) scaleX(1.15);
+    top: 6px;
+  }
+  50% {
+    transform: scaleY(0.9) scaleX(1.1);
+    top: 4px;
+  }
+  60% {
+    transform: scaleY(1.05) scaleX(0.95);
+    top: 2px;
+  }
+  70% {
+    transform: scale(1);
+    top: 0;
+  }
+  80% {
+    transform: scale(1);
+    top: -2px;
+  }
+  90% {
+    transform: scale(1);
+    top: -3px;
+  }
+  100% {
+    transform: scale(1);
+    top: -2px;
+  }
+}
